@@ -30,4 +30,5 @@ database/*.sqlite
 database/*.sqlite3
 .gunicorn_boot.lock
 gunicorn.sock
-uploads/
+uploads
+assets
