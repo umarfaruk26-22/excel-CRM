@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Customer Follow-up CRM</title>
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <style>
+    .settings-nav-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .settings-tab-btn {
+      padding: 9px 16px;
+      border-radius: var(--radius-md);
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .settings-tab-btn:hover {
+      background: #f1f5f9;
+      color: var(--text-primary);
+    }
+    .settings-tab-btn.active {
+      background: var(--primary-subtle);
+      color: var(--primary);
+      border-color: var(--primary-border);
+      font-weight: 600;
+    }
+    .theme-color-chip {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 3px solid #ffffff;
+      box-shadow: 0 0 0 1px #cbd5e1;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+    }
+    .theme-color-chip:hover {
+      transform: scale(1.1);
+    }
+    .theme-color-chip.active {
+      box-shadow: 0 0 0 2.5px var(--primary);
+      transform: scale(1.12);
+    }
+    .preview-dark-box {
+      background: #0f172a;
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #ffffff;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-layout">
+  <div class="sidebar-backdrop"></div>
+
+  <!-- Sidebar -->
+  <aside class="app-sidebar">
+    <div class="sidebar-header">
+      <a href="/" class="brand-link">
+        <div class="brand-logo-icon">C</div>
+        <span>CRM Follow-up</span>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Core Modules</div>
+      <a href="/" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        <span>Dashboard</span>
+      </a>
+      <a href="/customers.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+        <span>All Customers</span>
+      </a>
+
+      <div class="nav-section-title">Follow-ups</div>
+      <a href="/followups.html?type=today" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span>Today's Follow-ups</span>
+        <span class="nav-badge warning" id="sidebar-badge-today" style="display:none;">0</span>
+      </a>
+      <a href="/followups.html?type=due_soon" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        <span>Due Soon (<span class="advance-days-lbl">5</span> Days)</span>
+        <span class="nav-badge info" id="sidebar-badge-due-soon" style="display:none; background:#0284c7; color:#fff;">0</span>
+      </a>
+      <a href="/followups.html?type=upcoming" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line></svg>
+        <span>Upcoming Follow-ups</span>
+      </a>
+      <a href="/followups.html?type=overdue" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <span>Overdue Follow-ups</span>
+        <span class="nav-badge danger" id="sidebar-badge-overdue" style="display:none;">0</span>
+      </a>
+
+      <div class="nav-section-title">Excel Data</div>
+      <a href="/imports.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        <span>Excel Imports</span>
+      </a>
+      <a href="/month-files.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+        <span>Month-wise Files</span>
+      </a>
+      <a href="/call-history.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        <span>Call History</span>
+      </a>
+
+      <div class="nav-section-title">System</div>
+      <a href="/reports.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        <span>Reports</span>
+      </a>
+      <a href="/settings.html" class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="admin-profile">
+        <div class="admin-avatar">A</div>
+        <div class="admin-info">
+          <div class="admin-name">Administrator</div>
+          <div class="admin-role">Admin Account</div>
+        </div>
+      </div>
+      <button class="logout-btn" title="Log Out">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="app-main">
+    <header class="app-topbar">
+      <div class="topbar-left">
+        <button class="mobile-toggle" aria-label="Toggle Navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <h1 class="page-title">Application Settings & Configuration</h1>
+      </div>
+      <div class="topbar-right" style="display:flex; gap:10px;">
+        <button type="button" class="btn btn-secondary btn-sm" id="btn-export-backup-top">
+          📥 Backup Data
+        </button>
+      </div>
+    </header>
+
+    <div class="page-content" style="max-width:980px;">
+
+      <!-- Navigation Jump Tabs -->
+      <div class="settings-nav-tabs">
+        <a href="#section-firm" class="settings-tab-btn active">
+          🏢 Firm & Branding
+        </a>
+        <a href="#section-theme" class="settings-tab-btn">
+          🎨 Theme & Localization
+        </a>
+        <a href="#section-workflow" class="settings-tab-btn">
+          ⏱️ Follow-up Defaults
+        </a>
+        <a href="#section-security" class="settings-tab-btn">
+          🔐 Admin Account & Password
+        </a>
+        <a href="#section-system" class="settings-tab-btn">
+          ⚙️ System & Backup
+        </a>
+      </div>
+
+      <!-- 1. Firm Profile & Branding Settings Card -->
+      <section id="section-firm">
+        <div class="card" style="border-top:3px solid var(--primary);">
+          <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <h2 class="card-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+              Firm Profile & Business Identity
+            </h2>
+            <span class="badge badge-completed" id="firm-badge-status">Active Profile</span>
+          </div>
+          <div class="card-body">
+            <p style="font-size:13px; color:var(--text-secondary); margin-bottom:20px;">
+              Configure your firm name, logo, and business contact information. These details dynamically reflect across your <strong>Sidebar</strong>, <strong>Login Screen</strong>, <strong>Reports</strong>, and <strong>Exported Documents</strong>.
+            </p>
+
+            <!-- Brand Logo Upload & Live Previews -->
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:var(--radius-lg); padding:20px; margin-bottom:24px;">
+              <div style="font-size:14px; font-weight:700; color:var(--text-primary); margin-bottom:4px;">
+                Company Logo & Visual Brand
+              </div>
+              <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:16px;">
+                Upload your firm's official logo (PNG, JPG, SVG, WebP, max 5MB). Transparent PNG or SVG is recommended.
+              </p>
+
+              <div style="display:flex; gap:20px; align-items:center; flex-wrap:wrap;">
+                <!-- Light Background Preview -->
+                <div style="text-align:center;">
+                  <div id="firm-logo-preview-box" style="width:90px; height:90px; border-radius:12px; border:2px dashed #cbd5e1; background:#ffffff; display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative; box-shadow:0 1px 4px rgba(0,0,0,0.06); margin-bottom:6px;">
+                    <span id="firm-logo-fallback-text" style="font-size:36px; font-weight:700; color:var(--primary);">C</span>
+                    <img id="firm-logo-img" src="" alt="Firm Logo" style="display:none; width:100%; height:100%; object-fit:contain; padding:6px;">
+                  </div>
+                  <span style="font-size:11px; color:var(--text-muted); font-weight:500;">Light Preview</span>
+                </div>
+
+                <!-- Dark Sidebar Live Preview Box -->
+                <div style="text-align:center;">
+                  <div class="preview-dark-box" style="height:90px; min-width:210px; box-sizing:border-box; margin-bottom:6px;">
+                    <div id="sidebar-preview-logo-box" style="width:36px; height:36px; border-radius:6px; background:rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;">
+                      <span id="sidebar-preview-logo-char" style="font-size:18px; font-weight:700; color:#fff;">C</span>
+                      <img id="sidebar-preview-logo-img" src="" alt="Sidebar Logo" style="display:none; width:100%; height:100%; object-fit:contain; padding:2px;">
+                    </div>
+                    <div style="text-align:left; overflow:hidden;">
+                      <div id="sidebar-preview-name" style="font-size:13.5px; font-weight:700; color:#fff; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;">CRM Follow-up</div>
+                      <div style="font-size:10.5px; color:#94a3b8;">Sidebar Appearance</div>
+                    </div>
+                  </div>
+                  <span style="font-size:11px; color:var(--text-muted); font-weight:500;">Sidebar Preview</span>
+                </div>
+
+                <!-- Upload & Action Controls -->
+                <div style="flex:1; min-width:220px; display:flex; flex-direction:column; gap:10px;">
+                  <input type="file" id="firm-logo-file-input" accept=".png,.jpg,.jpeg,.webp,.svg" style="display:none;">
+                  <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('firm-logo-file-input').click()" style="font-weight:600;">
+                      📁 Upload New Logo
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-sm" id="btn-remove-logo" style="display:none; color:#dc2626; border-color:#fca5a5; background:#fff1f2; font-weight:600;">
+                      ✕ Remove Logo
+                    </button>
+                  </div>
+                  <div style="font-size:11.5px; color:var(--text-muted); line-height:1.4;">
+                    Your logo automatically updates across the application header, mobile menu, and login page upon saving.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Master Firm & System Settings Form -->
+            <form id="firm-settings-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="setting-firm-name">Firm / Company Name *</label>
+                  <input type="text" id="setting-firm-name" class="form-control" required placeholder="e.g. Buller Leather & Co">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="setting-firm-tagline">Business Tagline / Slogan</label>
+                  <input type="text" id="setting-firm-tagline" class="form-control" placeholder="e.g. Generational Leather Craftsmanship & Luxury">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="setting-firm-phone">Contact Phone / Support Mobile</label>
+                  <input type="tel" id="setting-firm-phone" class="form-control" placeholder="e.g. +91 98765 43210">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="setting-firm-email">Official Contact Email</label>
+                  <input type="email" id="setting-firm-email" class="form-control" placeholder="e.g. contact@bullerleather.com">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="setting-firm-gst">GST / Business Registration Number</label>
+                  <input type="text" id="setting-firm-gst" class="form-control" placeholder="e.g. 24AAAAA0000A1Z5">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="setting-firm-website">Website URL</label>
+                  <input type="url" id="setting-firm-website" class="form-control" placeholder="e.g. https://www.bullerleather.com">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="setting-firm-address">Physical Office / Showroom / Warehouse Address</label>
+                <textarea id="setting-firm-address" class="form-control" rows="2" placeholder="e.g. 104 Commercial Tower, Leather Hub, City, State - 360001"></textarea>
+              </div>
+
+              <div style="margin-top:20px; display:flex; justify-content:flex-end;">
+                <button type="submit" class="btn btn-primary" id="btn-save-firm" style="font-weight:600; padding:9px 24px;">
+                  💾 Save Firm & Identity Settings
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Look & Feel, Theme Accent & Regional Settings Card -->
+      <section id="section-theme">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a7 7 0 0 0 7 7c0 2-2 3-2 3s-1 1-1 3v1a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-1c0-2-1-3-1-3s-2-1-2-3a7 7 0 0 0 7-7z"></path></svg>
+              Theme Accent Color & Regional Preferences
+            </h2>
+          </div>
+          <div class="card-body">
+            <p style="font-size:13px; color:var(--text-secondary); margin-bottom:18px;">
+              Personalize the CRM's visual accent to match your brand colors, and configure currency and date format.
+            </p>
+
+            <form id="theme-settings-form">
+              <!-- Accent Color Selection -->
+              <div class="form-group" style="margin-bottom:20px;">
+                <label class="form-label">Brand Primary Theme Color</label>
+                <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:8px;">
+                  <div class="theme-color-chip active" data-color="#2563eb" style="background:#2563eb;" title="Royal Blue (Default)">✓</div>
+                  <div class="theme-color-chip" data-color="#059669" style="background:#059669;" title="Emerald Green"></div>
+                  <div class="theme-color-chip" data-color="#0284c7" style="background:#0284c7;" title="Oceanic Sapphire"></div>
+                  <div class="theme-color-chip" data-color="#7c3aed" style="background:#7c3aed;" title="Imperial Purple"></div>
+                  <div class="theme-color-chip" data-color="#e11d48" style="background:#e11d48;" title="Ruby Crimson"></div>
+                  <div class="theme-color-chip" data-color="#d97706" style="background:#d97706;" title="Amber Gold"></div>
+                  <div class="theme-color-chip" data-color="#0f172a" style="background:#0f172a;" title="Midnight Slate"></div>
+
+                  <div style="display:flex; align-items:center; gap:8px; margin-left:10px;">
+                    <input type="color" id="theme-custom-color-picker" value="#2563eb" style="width:38px; height:38px; border:none; border-radius:8px; cursor:pointer; background:none;">
+                    <input type="text" id="theme-custom-hex-input" class="form-control" value="#2563eb" style="width:95px; font-family:var(--font-mono); font-size:13px; text-transform:uppercase;">
+                  </div>
+                </div>
+                <small style="color:var(--text-muted); font-size:12px; margin-top:6px; display:block;">
+                  Selecting a color dynamically adapts sidebar highlights, primary buttons, badges, and accents.
+                </small>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="setting-currency-symbol">Default Currency Symbol</label>
+                  <select id="setting-currency-symbol" class="form-control">
+                    <option value="₹">₹ (INR - Indian Rupee)</option>
+                    <option value="$">$ (USD - US Dollar)</option>
+                    <option value="€">€ (EUR - Euro)</option>
+                    <option value="£">£ (GBP - British Pound)</option>
+                    <option value="AED">AED (UAE Dirham)</option>
+                    <option value="SAR">SAR (Saudi Riyal)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="setting-date-format">Display Date Format</label>
+                  <select id="setting-date-format" class="form-control">
+                    <option value="DD/MM/YYYY">DD/MM/YYYY (e.g. 24/10/2026)</option>
+                    <option value="YYYY-MM-DD">YYYY-MM-DD (e.g. 2026-10-24 - ISO)</option>
+                    <option value="MM/DD/YYYY">MM/DD/YYYY (e.g. 10/24/2026)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style="margin-top:16px; display:flex; justify-content:flex-end;">
+                <button type="submit" class="btn btn-primary" id="btn-save-theme" style="font-weight:600;">
+                  🎨 Apply Theme & Localization
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. CRM Follow-up & Notification Workflow Defaults -->
+      <section id="section-workflow">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              Follow-up & Reminder Alert Windows
+            </h2>
+            <span class="badge badge-scheduled" id="current-advance-badge">5 Days Notice</span>
+          </div>
+          <div class="card-body">
+            <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">
+              Configure how the CRM calculates upcoming due dates and triggers reminder badges across the system.
+            </p>
+
+            <form id="workflow-settings-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="advance-days-input">Advance Reminder Notice Period (Days)</label>
+                  <input type="number" id="advance-days-input" class="form-control" min="1" max="60" value="5" required>
+                  <small style="color:var(--text-muted); font-size:12px; margin-top:4px; display:block;">
+                    Shows reminder alerts on Dashboard & "Due Soon" tracker before the scheduled follow-up.
+                  </small>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="default-followup-days-input">Default Next Follow-up Interval (Days)</label>
+                  <input type="number" id="default-followup-days-input" class="form-control" min="1" max="180" value="7" required>
+                  <small style="color:var(--text-muted); font-size:12px; margin-top:4px; display:block;">
+                    Pre-fills the date picker when scheduling follow-ups during call logging.
+                  </small>
+                </div>
+              </div>
+
+              <div style="margin-top:16px; display:flex; justify-content:flex-end;">
+                <button type="submit" class="btn btn-primary" id="btn-save-workflow" style="font-weight:600;">
+                  ⏱️ Save Workflow Defaults
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Admin Account & Password Security Card -->
+      <section id="section-security">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              Admin Account & Credentials Management
+            </h2>
+            <span class="badge badge-completed">Master Admin</span>
+          </div>
+          <div class="card-body">
+            <p style="font-size:13px; color:var(--text-secondary); margin-bottom:18px;">
+              Update your administrator profile name, login email, or change your master login password directly.
+            </p>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+              <!-- Admin Profile Details Form -->
+              <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:var(--radius-md); padding:18px;">
+                <h3 style="font-size:14px; font-weight:700; margin-bottom:14px; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
+                  👤 Update Admin Profile
+                </h3>
+                <form id="admin-profile-form">
+                  <div class="form-group">
+                    <label class="form-label" for="admin-name-input">Administrator Name</label>
+                    <input type="text" id="admin-name-input" class="form-control" required placeholder="Administrator">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="admin-email-input">Login Email Address</label>
+                    <input type="email" id="admin-email-input" class="form-control" required placeholder="admin@crm.local">
+                  </div>
+                  <button type="submit" class="btn btn-primary btn-sm" id="btn-save-admin-profile" style="margin-top:10px; font-weight:600;">
+                    Update Profile Info
+                  </button>
+                </form>
+              </div>
+
+              <!-- Admin Password Change Form -->
+              <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:var(--radius-md); padding:18px;">
+                <h3 style="font-size:14px; font-weight:700; margin-bottom:14px; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
+                  🔑 Change Password
+                </h3>
+                <form id="admin-password-form">
+                  <div class="form-group">
+                    <label class="form-label" for="admin-curr-password">Current Password *</label>
+                    <input type="password" id="admin-curr-password" class="form-control" required placeholder="••••••••">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="admin-new-password">New Password (Min 6 chars) *</label>
+                    <input type="password" id="admin-new-password" class="form-control" minlength="6" required placeholder="••••••••">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="admin-confirm-password">Confirm New Password *</label>
+                    <input type="password" id="admin-confirm-password" class="form-control" minlength="6" required placeholder="••••••••">
+                  </div>
+                  <button type="submit" class="btn btn-secondary btn-sm" id="btn-change-password" style="margin-top:10px; font-weight:600;">
+                    Update Password
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. System Architecture, Data Backup & Factory Reset -->
+      <section id="section-system">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+              System Status, Data Backup & Reset
+            </h2>
+            <span class="badge badge-completed">Healthy</span>
+          </div>
+          <div class="card-body">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
+              <div>
+                <label class="form-label">Database Server</label>
+                <div style="font-family:var(--font-mono); font-size:13.5px; font-weight:600;">MySQL (XAMPP at 127.0.0.1:3306)</div>
+              </div>
+              <div>
+                <label class="form-label">Target Database</label>
+                <div style="font-family:var(--font-mono); font-size:13.5px; font-weight:600;">customer_followup_crm</div>
+              </div>
+              <div>
+                <label class="form-label">Application Timezone</label>
+                <div style="font-size:13.5px; font-weight:600;">Asia/Kolkata (IST, UTC+5:30)</div>
+              </div>
+              <div>
+                <label class="form-label">Max Upload Limit</label>
+                <div style="font-size:13.5px; font-weight:600;">25 MB (.xlsx, .xls)</div>
+              </div>
+            </div>
+
+            <!-- Action Buttons: Backup & Factory Reset -->
+            <div style="border-top:1px solid #e2e8f0; padding-top:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+              <div>
+                <button type="button" class="btn btn-secondary" id="btn-export-backup" style="font-weight:600;">
+                  📥 Download Complete Data Backup (JSON)
+                </button>
+                <div style="font-size:11.5px; color:var(--text-muted); margin-top:4px;">
+                  Exports all customers, scheduled follow-ups, and call logs into a downloadable backup file.
+                </div>
+              </div>
+
+              <div>
+                <button type="button" class="btn btn-secondary" id="btn-reset-branding" style="color:#b91c1c; border-color:#fca5a5; background:#fff1f2; font-weight:600;">
+                  🔄 Reset Branding to Defaults
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Duplicate Detection Engine Rules Box -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              Duplicate Detection Rules Reference
+            </h2>
+          </div>
+          <div class="card-body">
+            <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">
+              The CRM checks imported Excel rows against MySQL in the following priority order:
+            </p>
+            <ol style="padding-left:20px; font-size:13px; color:var(--text-primary); line-height:1.7;">
+              <li><strong>CRM Customer Code / ID:</strong> Exact alphanumeric match (e.g. <code>CUST-1002</code>).</li>
+              <li><strong>Normalized Mobile:</strong> 10-digit clean digits match, ignoring leading zeros, country code <code>+91</code>, spaces, and hyphens.</li>
+              <li><strong>Normalized Email:</strong> Lowercased, whitespace-trimmed email comparison.</li>
+            </ol>
+            <p style="font-size:12px; color:var(--text-muted); margin-top:8px;">
+              Records are never merged on customer name alone to prevent false positives for common names.
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<div id="toast-container"></div>
+
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/toast.js"></script>
+<script src="/assets/js/sidebar.js"></script>
+<script>
+  let currentFirmLogo = "";
+  let selectedThemeColor = "#2563eb";
+
+  // Updates both light and dark preview components
+  function updateLogoPreview(logoUrl, firmName) {
+    const logoImg = document.getElementById("firm-logo-img");
+    const fallbackText = document.getElementById("firm-logo-fallback-text");
+    const removeBtn = document.getElementById("btn-remove-logo");
+
+    const sbImg = document.getElementById("sidebar-preview-logo-img");
+    const sbChar = document.getElementById("sidebar-preview-logo-char");
+    const sbName = document.getElementById("sidebar-preview-name");
+
+    const initial = firmName ? firmName.trim()[0].toUpperCase() : "C";
+    sbName.textContent = firmName || "CRM Follow-up";
+
+    if (logoUrl) {
+      currentFirmLogo = logoUrl;
+      logoImg.src = logoUrl;
+      logoImg.style.display = "block";
+      fallbackText.style.display = "none";
+      removeBtn.style.display = "inline-block";
+
+      sbImg.src = logoUrl;
+      sbImg.style.display = "block";
+      sbChar.style.display = "none";
+    } else {
+      currentFirmLogo = "";
+      logoImg.src = "";
+      logoImg.style.display = "none";
+      fallbackText.style.display = "block";
+      fallbackText.textContent = initial;
+      removeBtn.style.display = "none";
+
+      sbImg.src = "";
+      sbImg.style.display = "none";
+      sbChar.style.display = "block";
+      sbChar.textContent = initial;
+    }
+  }
+
+  function setActiveThemeColor(color) {
+    if (!color) return;
+    selectedThemeColor = color;
+
+    document.querySelectorAll(".theme-color-chip").forEach(chip => {
+      if (chip.getAttribute("data-color").toLowerCase() === color.toLowerCase()) {
+        chip.classList.add("active");
+        chip.textContent = "✓";
+      } else {
+        chip.classList.remove("active");
+        chip.textContent = "";
+      }
+    });
+
+    document.getElementById("theme-custom-color-picker").value = color;
+    document.getElementById("theme-custom-hex-input").value = color.toUpperCase();
+
+    // Live preview theme color on page
+    document.documentElement.style.setProperty('--primary', color);
+    document.documentElement.style.setProperty('--bg-sidebar-active', color);
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    // Live input synchronization for firm name in preview
+    const nameInput = document.getElementById("setting-firm-name");
+    nameInput.addEventListener("input", () => {
+      updateLogoPreview(currentFirmLogo, nameInput.value);
+    });
+
+    // Color chips click handling
+    document.querySelectorAll(".theme-color-chip").forEach(chip => {
+      chip.addEventListener("click", () => {
+        const color = chip.getAttribute("data-color");
+        setActiveThemeColor(color);
+      });
+    });
+
+    // Custom color picker handling
+    const colorPicker = document.getElementById("theme-custom-color-picker");
+    const hexInput = document.getElementById("theme-custom-hex-input");
+
+    colorPicker.addEventListener("input", (e) => {
+      setActiveThemeColor(e.target.value);
+    });
+
+    hexInput.addEventListener("change", (e) => {
+      let val = e.target.value.trim();
+      if (!val.startsWith("#")) val = "#" + val;
+      if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+        setActiveThemeColor(val);
+      }
+    });
+
+    // 1. Load Admin and System Settings
+    try {
+      const user = await window.api.get("/api/auth/me");
+      if (user) {
+        document.getElementById("admin-name-input").value = user.full_name || "Administrator";
+        document.getElementById("admin-email-input").value = user.email || "";
+      }
+      
+      const conf = await window.api.get("/api/settings");
+      if (conf) {
+        if (conf.reminder_advance_days) {
+          document.getElementById("advance-days-input").value = conf.reminder_advance_days;
+          document.getElementById("current-advance-badge").textContent = `${conf.reminder_advance_days} Days Notice`;
+        }
+        if (conf.default_followup_days) {
+          document.getElementById("default-followup-days-input").value = conf.default_followup_days;
+        }
+
+        // Populate Firm Settings
+        document.getElementById("setting-firm-name").value = conf.firm_name || "";
+        document.getElementById("setting-firm-tagline").value = conf.firm_tagline || "";
+        document.getElementById("setting-firm-phone").value = conf.firm_phone || "";
+        document.getElementById("setting-firm-email").value = conf.firm_email || "";
+        document.getElementById("setting-firm-gst").value = conf.firm_gst || "";
+        document.getElementById("setting-firm-website").value = conf.firm_website || "";
+        document.getElementById("setting-firm-address").value = conf.firm_address || "";
+
+        if (conf.theme_color) setActiveThemeColor(conf.theme_color);
+        if (conf.currency_symbol) document.getElementById("setting-currency-symbol").value = conf.currency_symbol;
+        if (conf.date_format) document.getElementById("setting-date-format").value = conf.date_format;
+
+        updateLogoPreview(conf.firm_logo, conf.firm_name);
+      }
+    } catch(e) {
+      console.error("Failed to load settings:", e);
+    }
+
+    // 2. Handle Logo Upload
+    const logoFileInput = document.getElementById("firm-logo-file-input");
+    if (logoFileInput) {
+      logoFileInput.addEventListener("change", async () => {
+        if (!logoFileInput.files || logoFileInput.files.length === 0) return;
+        const file = logoFileInput.files[0];
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+          showToast("Uploading brand logo...", "info");
+          const token = window.api.getToken();
+          const apiBase = window.API_BASE || (window.location.pathname.startsWith('/excel-crm') ? '/excel-crm' : '');
+          const res = await fetch(`${apiBase}/api/settings/firm/logo`, {
+            method: "POST",
+            headers: token ? { "Authorization": `Bearer ${token}` } : {},
+            body: formData
+          });
+
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.detail || "Logo upload failed");
+
+          showToast("Firm logo uploaded and applied!", "success");
+          updateLogoPreview(data.logo_url, document.getElementById("setting-firm-name").value);
+          if (window.refreshFirmBranding) window.refreshFirmBranding();
+        } catch (err) {
+          showToast(err.message || "Failed to upload logo", "danger");
+        } finally {
+          logoFileInput.value = "";
+        }
+      });
+    }
+
+    // 3. Handle Remove Logo
+    const removeLogoBtn = document.getElementById("btn-remove-logo");
+    if (removeLogoBtn) {
+      removeLogoBtn.addEventListener("click", async () => {
+        if (!confirm("Remove this firm logo and revert to default icon monogram?")) return;
+        try {
+          await window.api.delete("/api/settings/firm/logo");
+          showToast("Firm logo removed.", "success");
+          updateLogoPreview("", document.getElementById("setting-firm-name").value);
+          if (window.refreshFirmBranding) window.refreshFirmBranding();
+        } catch (err) {
+          showToast(err.message || "Failed to remove logo", "danger");
+        }
+      });
+    }
+
+    // 4. Handle Firm Identity Form Submit
+    const firmForm = document.getElementById("firm-settings-form");
+    if (firmForm) {
+      firmForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const saveBtn = document.getElementById("btn-save-firm");
+        saveBtn.disabled = true;
+        saveBtn.textContent = "Saving Identity...";
+
+        const payload = {
+          firm_name: document.getElementById("setting-firm-name").value.trim(),
+          firm_tagline: document.getElementById("setting-firm-tagline").value.trim(),
+          firm_phone: document.getElementById("setting-firm-phone").value.trim(),
+          firm_email: document.getElementById("setting-firm-email").value.trim(),
+          firm_gst: document.getElementById("setting-firm-gst").value.trim(),
+          firm_website: document.getElementById("setting-firm-website").value.trim(),
+          firm_address: document.getElementById("setting-firm-address").value.trim(),
+          theme_color: selectedThemeColor,
+          currency_symbol: document.getElementById("setting-currency-symbol").value,
+          date_format: document.getElementById("setting-date-format").value,
+          default_followup_days: parseInt(document.getElementById("default-followup-days-input").value) || 7,
+          reminder_advance_days: parseInt(document.getElementById("advance-days-input").value) || 5
+        };
+
+        try {
+          const res = await window.api.put("/api/settings/firm", payload);
+          showToast(res.message || "Firm profile updated successfully!", "success");
+          if (window.refreshFirmBranding) window.refreshFirmBranding();
+        } catch (err) {
+          showToast(err.message || "Failed to save firm settings", "danger");
+        } finally {
+          saveBtn.disabled = false;
+          saveBtn.textContent = "💾 Save Firm & Identity Settings";
+        }
+      };
+    }
+
+    // 5. Handle Theme Form Submit
+    const themeForm = document.getElementById("theme-settings-form");
+    if (themeForm) {
+      themeForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById("btn-save-theme");
+        btn.disabled = true;
+        btn.textContent = "Applying...";
+
+        const payload = {
+          firm_name: document.getElementById("setting-firm-name").value.trim() || "CRM Follow-up",
+          firm_tagline: document.getElementById("setting-firm-tagline").value.trim(),
+          firm_phone: document.getElementById("setting-firm-phone").value.trim(),
+          firm_email: document.getElementById("setting-firm-email").value.trim(),
+          firm_gst: document.getElementById("setting-firm-gst").value.trim(),
+          firm_website: document.getElementById("setting-firm-website").value.trim(),
+          firm_address: document.getElementById("setting-firm-address").value.trim(),
+          theme_color: selectedThemeColor,
+          currency_symbol: document.getElementById("setting-currency-symbol").value,
+          date_format: document.getElementById("setting-date-format").value,
+          default_followup_days: parseInt(document.getElementById("default-followup-days-input").value) || 7,
+          reminder_advance_days: parseInt(document.getElementById("advance-days-input").value) || 5
+        };
+
+        try {
+          const res = await window.api.put("/api/settings/firm", payload);
+          showToast("Theme and regional preferences applied!", "success");
+          if (window.refreshFirmBranding) window.refreshFirmBranding();
+        } catch (err) {
+          showToast(err.message || "Failed to apply theme", "danger");
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "🎨 Apply Theme & Localization";
+        }
+      };
+    }
+
+    // 6. Handle Workflow Defaults Form Submit
+    const workflowForm = document.getElementById("workflow-settings-form");
+    if (workflowForm) {
+      workflowForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById("btn-save-workflow");
+        btn.disabled = true;
+        btn.textContent = "Saving...";
+
+        const payload = {
+          firm_name: document.getElementById("setting-firm-name").value.trim() || "CRM Follow-up",
+          theme_color: selectedThemeColor,
+          default_followup_days: parseInt(document.getElementById("default-followup-days-input").value) || 7,
+          reminder_advance_days: parseInt(document.getElementById("advance-days-input").value) || 5
+        };
+
+        try {
+          const res = await window.api.put("/api/settings/firm", payload);
+          showToast("Follow-up workflow settings saved!", "success");
+          document.getElementById("current-advance-badge").textContent = `${payload.reminder_advance_days} Days Notice`;
+          document.querySelectorAll(".advance-days-lbl").forEach(el => el.textContent = payload.reminder_advance_days);
+        } catch (err) {
+          showToast(err.message || "Failed to save workflow settings", "danger");
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "⏱️ Save Workflow Defaults";
+        }
+      };
+    }
+
+    // 7. Handle Admin Profile Form Submit
+    const adminProfileForm = document.getElementById("admin-profile-form");
+    if (adminProfileForm) {
+      adminProfileForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById("btn-save-admin-profile");
+        btn.disabled = true;
+        btn.textContent = "Updating...";
+
+        const payload = {
+          full_name: document.getElementById("admin-name-input").value.trim(),
+          email: document.getElementById("admin-email-input").value.trim()
+        };
+
+        try {
+          const updated = await window.api.put("/api/auth/profile", payload);
+          showToast("Admin profile updated successfully!", "success");
+          const nameEl = document.querySelector(".admin-name");
+          const avatarEl = document.querySelector(".admin-avatar");
+          if (nameEl && updated.full_name) nameEl.textContent = updated.full_name;
+          if (avatarEl && updated.full_name) avatarEl.textContent = updated.full_name[0].toUpperCase();
+        } catch (err) {
+          showToast(err.message || "Failed to update admin profile", "danger");
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Update Profile Info";
+        }
+      };
+    }
+
+    // 8. Handle Admin Password Form Submit
+    const adminPasswordForm = document.getElementById("admin-password-form");
+    if (adminPasswordForm) {
+      adminPasswordForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const currPass = document.getElementById("admin-curr-password").value;
+        const newPass = document.getElementById("admin-new-password").value;
+        const confPass = document.getElementById("admin-confirm-password").value;
+
+        if (newPass !== confPass) {
+          showToast("New passwords do not match. Please re-enter.", "warning");
+          return;
+        }
+
+        const btn = document.getElementById("btn-change-password");
+        btn.disabled = true;
+        btn.textContent = "Changing Password...";
+
+        try {
+          const res = await window.api.put("/api/auth/change-password", {
+            current_password: currPass,
+            new_password: newPass
+          });
+          showToast(res.message || "Password changed successfully!", "success");
+          adminPasswordForm.reset();
+        } catch (err) {
+          showToast(err.message || "Failed to change password", "danger");
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Update Password";
+        }
+      };
+    }
+
+    // 9. Handle Backup Export
+    const handleBackupExport = async () => {
+      try {
+        showToast("Generating system data backup...", "info");
+        const token = window.api.getToken();
+        const apiBase = window.API_BASE || (window.location.pathname.startsWith('/excel-crm') ? '/excel-crm' : '');
+        const res = await fetch(`${apiBase}/api/settings/backup/export`, {
+          headers: token ? { "Authorization": `Bearer ${token}` } : {}
+        });
+        if (!res.ok) throw new Error("Backup generation failed");
+
+        const data = await res.json();
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        const dateStr = new Date().toISOString().slice(0, 10);
+        a.href = url;
+        a.download = `crm_full_backup_${dateStr}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast("Backup downloaded successfully!", "success");
+      } catch (err) {
+        showToast(err.message || "Failed to export backup", "danger");
+      }
+    };
+
+    const backupBtn = document.getElementById("btn-export-backup");
+    if (backupBtn) backupBtn.addEventListener("click", handleBackupExport);
+    const backupTopBtn = document.getElementById("btn-export-backup-top");
+    if (backupTopBtn) backupTopBtn.addEventListener("click", handleBackupExport);
+
+    // 10. Handle Reset Branding to Defaults
+    const resetBrandingBtn = document.getElementById("btn-reset-branding");
+    if (resetBrandingBtn) {
+      resetBrandingBtn.addEventListener("click", async () => {
+        if (!confirm("Are you sure you want to reset all firm branding, colors, and logos back to factory defaults?")) return;
+        try {
+          const res = await window.api.post("/api/settings/reset-branding");
+          showToast(res.message || "Branding reset to defaults.", "success");
+          setTimeout(() => window.location.reload(), 1000);
+        } catch (err) {
+          showToast(err.message || "Failed to reset branding", "danger");
+        }
+      });
+    }
+  });
+</script>
+</body>
+</html>

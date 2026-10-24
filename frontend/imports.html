@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Excel Imports - Customer Follow-up CRM</title>
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <style>
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      z-index: 1;
+      background: var(--bg-app);
+      padding: 0 10px;
+    }
+    .step-item.active {
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .step-item.completed {
+      color: var(--success-text);
+    }
+    .step-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .step-item.active .step-num {
+      background: var(--primary);
+      color: #fff;
+    }
+    .step-item.completed .step-num {
+      background: var(--success);
+      color: #fff;
+    }
+    .mapping-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .custom-cols-box {
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      background: #f8fafc;
+      max-height: 220px;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-layout">
+  <div class="sidebar-backdrop"></div>
+
+  <!-- Sidebar -->
+  <aside class="app-sidebar">
+    <div class="sidebar-header">
+      <a href="/" class="brand-link">
+        <div class="brand-logo-icon">C</div>
+        <span>CRM Follow-up</span>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Core Modules</div>
+      <a href="/" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        <span>Dashboard</span>
+      </a>
+      <a href="/customers.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+        <span>All Customers</span>
+      </a>
+
+      <div class="nav-section-title">Follow-ups</div>
+      <a href="/followups.html?type=today" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span>Today's Follow-ups</span>
+        <span class="nav-badge warning" id="sidebar-badge-today" style="display:none;">0</span>
+      </a>
+      <a href="/followups.html?type=due_soon" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        <span>Due Soon (<span class="advance-days-lbl">5</span> Days)</span>
+        <span class="nav-badge info" id="sidebar-badge-due-soon" style="display:none; background:#0284c7; color:#fff;">0</span>
+      </a>
+      <a href="/followups.html?type=upcoming" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line></svg>
+        <span>Upcoming Follow-ups</span>
+      </a>
+      <a href="/followups.html?type=overdue" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <span>Overdue Follow-ups</span>
+        <span class="nav-badge danger" id="sidebar-badge-overdue" style="display:none;">0</span>
+      </a>
+
+      <div class="nav-section-title">Excel Data</div>
+      <a href="/imports.html" class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        <span>Excel Imports</span>
+      </a>
+      <a href="/month-files.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+        <span>Month-wise Files</span>
+      </a>
+      <a href="/call-history.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        <span>Call History</span>
+      </a>
+
+      <div class="nav-section-title">System</div>
+      <a href="/reports.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        <span>Reports</span>
+      </a>
+      <a href="/settings.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="admin-profile">
+        <div class="admin-avatar">A</div>
+        <div class="admin-info">
+          <div class="admin-name">Administrator</div>
+          <div class="admin-role">Admin Account</div>
+        </div>
+      </div>
+      <button class="logout-btn" title="Log Out">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="app-main">
+    <header class="app-topbar">
+      <div class="topbar-left">
+        <button class="mobile-toggle" aria-label="Toggle Navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <h1 class="page-title">Excel Customer Import Wizard</h1>
+      </div>
+      <div class="topbar-right">
+        <a href="/month-files.html" class="btn btn-secondary btn-sm">View Import History</a>
+      </div>
+    </header>
+
+    <div class="page-content">
+      <!-- Stepper Indicator -->
+      <div class="step-indicator">
+        <div class="step-item active" id="step-nav-1">
+          <div class="step-num">1</div>
+          <span>Upload File</span>
+        </div>
+        <div class="step-item" id="step-nav-2">
+          <div class="step-num">2</div>
+          <span>Select Sheet & Preview</span>
+        </div>
+        <div class="step-item" id="step-nav-3">
+          <div class="step-num">3</div>
+          <span>Map Columns & Rules</span>
+        </div>
+        <div class="step-item" id="step-nav-4">
+          <div class="step-num">4</div>
+          <span>Import Summary</span>
+        </div>
+      </div>
+
+      <!-- STEP 1: Upload Dropzone -->
+      <div class="card" id="step-1-card">
+        <div class="card-header">
+          <h2 class="card-title">Select or Drop Excel Workbook</h2>
+          <span style="font-size:12.5px; color:var(--text-muted);">Supports .xlsx and legacy .xls files (up to 25MB)</span>
+        </div>
+        <div class="card-body">
+          <div class="dropzone" id="file-dropzone">
+            <svg class="dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <h3 style="font-size:16px; margin-bottom:6px; color:var(--text-primary);">Drag & drop your Excel file here</h3>
+            <p style="color:var(--text-muted); font-size:13px; margin-bottom:16px;">or click to browse from your computer</p>
+            <input type="file" id="excel-file-input" accept=".xlsx, .xls" style="display:none;">
+            <button type="button" class="btn btn-primary" onclick="document.getElementById('excel-file-input').click()">
+              Browse File
+            </button>
+          </div>
+
+          <div id="upload-progress-container" style="display:none; margin-top:20px;">
+            <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;">
+              <span id="upload-filename">Uploading file...</span>
+              <span id="upload-percent">Processing...</span>
+            </div>
+            <div style="height:6px; background:#e2e8f0; border-radius:9999px; overflow:hidden;">
+              <div id="upload-progress-bar" style="height:100%; width:100%; background:var(--primary); transition:width 0.3s ease;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: Sheet Selection & Preview -->
+      <div class="card" id="step-2-card" style="display:none;">
+        <div class="card-header">
+          <h2 class="card-title">Select Worksheet & Review Top Rows</h2>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <label class="form-label" style="margin:0;">Worksheet:</label>
+            <select id="sheet-select" class="form-select" style="width:200px; padding:6px 10px; font-size:13px;"></select>
+          </div>
+        </div>
+        <div class="card-body">
+          <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px;">
+            Confirm that headers and data rows align properly before proceeding to column mapping. Formulas and macros are ignored for data safety.
+          </p>
+          <div class="table-responsive" style="max-height:300px; overflow-y:auto;">
+            <table class="crm-table" id="preview-table">
+              <thead id="preview-thead"></thead>
+              <tbody id="preview-tbody"></tbody>
+            </table>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+            <button type="button" class="btn btn-secondary" onclick="goToStep(1)">Back</button>
+            <button type="button" class="btn btn-primary" onclick="goToStep(3)">Continue to Column Mapping &rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: Column Mapping & Duplicate Handling -->
+      <div class="card" id="step-3-card" style="display:none;">
+        <div class="card-header">
+          <h2 class="card-title">Map Excel Columns to CRM Fields</h2>
+          <span class="badge badge-neutral">Auto-suggestions Applied</span>
+        </div>
+        <div class="card-body">
+          <p style="font-size:13px; color:var(--text-muted); margin-bottom:18px;">
+            Match fields from your Excel spreadsheet to CRM customer attributes. Any unmapped columns can be saved as structured Custom Fields.
+          </p>
+
+          <h3 style="font-size:14px; margin-bottom:12px; color:var(--text-primary); border-bottom:1px solid var(--border-color); padding-bottom:6px;">
+            Standard Customer Fields
+          </h3>
+          <div class="mapping-grid" id="mapping-fields-container">
+            <!-- Populated dynamically -->
+          </div>
+
+          <h3 style="font-size:14px; margin:24px 0 12px; color:var(--text-primary); border-bottom:1px solid var(--border-color); padding-bottom:6px;">
+            Include in Custom Fields JSON (Unmapped Columns)
+          </h3>
+          <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:10px;">Select extra columns you wish to retain on the customer profile:</p>
+          <div class="custom-cols-box" id="custom-fields-checkboxes">
+            <!-- Populated dynamically -->
+          </div>
+
+          <h3 style="font-size:14px; margin:24px 0 12px; color:var(--text-primary); border-bottom:1px solid var(--border-color); padding-bottom:6px;">
+            Duplicate Detection Strategy
+          </h3>
+          <div style="background:#f8fafc; border:1px solid var(--border-color); border-radius:var(--radius-md); padding:16px;">
+            <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">
+              When a record matches an existing customer (by Customer Code, 10-digit Mobile, or Email):
+            </p>
+            <div style="display:flex; flex-direction:column; gap:8px; font-size:13.5px;">
+              <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                <input type="radio" name="duplicate_handling" value="skip" checked>
+                <span><strong>Skip Duplicate:</strong> Do not update or re-add; log as duplicate. (Recommended)</span>
+              </label>
+              <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                <input type="radio" name="duplicate_handling" value="update">
+                <span><strong>Update Existing Customer:</strong> Overwrite empty or updated customer fields.</span>
+              </label>
+              <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                <input type="radio" name="duplicate_handling" value="import_new">
+                <span><strong>Import as Separate Record:</strong> Force insert as a new customer record.</span>
+              </label>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:24px;">
+            <button type="button" class="btn btn-secondary" onclick="goToStep(2)">Back</button>
+            <button type="button" class="btn btn-primary" id="commit-import-btn" onclick="executeImport()">
+              Start Transactional Import &rarr;
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4: Import Summary & Results -->
+      <div class="card" id="step-4-card" style="display:none;">
+        <div class="card-header">
+          <h2 class="card-title">Import Execution Results</h2>
+          <span id="import-status-badge" class="badge badge-completed">Completed</span>
+        </div>
+        <div class="card-body">
+          <!-- File Success Callout -->
+          <div class="file-success-banner" id="file-success-banner" style="background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 100%); border: 1.5px solid #3b82f6; border-radius: var(--radius-md); padding: 18px 22px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #1d4ed8; letter-spacing: 0.05em;">File Uploaded & Saved Separately</div>
+              <div style="font-size: 17px; font-weight: 700; color: #1e293b; margin-top: 3px;" id="imported-file-name-display">File.xlsx</div>
+              <div style="font-size: 13px; color: #475569; margin-top: 2px;">This file's records are segregated. Click below to view only this file's data and start editing rows!</div>
+            </div>
+            <a href="#" id="view-file-data-btn" class="btn btn-primary" style="padding: 10px 22px; font-size: 14px; font-weight: 600; box-shadow: 0 4px 12px rgba(37,99,235,0.25);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              Open & Edit This File's Records &rarr;
+            </a>
+          </div>
+
+          <div class="stats-grid" style="margin-bottom:24px;">
+            <div class="stat-card">
+              <div class="stat-title">Total Rows</div>
+              <div class="stat-value" id="summary-total-rows">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Successfully Imported</div>
+              <div class="stat-value" id="summary-imported-rows" style="color:var(--success);">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Updated Existing</div>
+              <div class="stat-value" id="summary-updated-rows" style="color:var(--primary);">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Duplicates Skipped</div>
+              <div class="stat-value" id="summary-duplicate-rows" style="color:var(--warning-text);">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Rejected Rows</div>
+              <div class="stat-value" id="summary-rejected-rows" style="color:var(--danger-text);">0</div>
+            </div>
+          </div>
+
+          <div id="error-report-section" style="display:none; background:var(--danger-bg); border:1px solid var(--danger-border); border-radius:var(--radius-md); padding:16px; margin-bottom:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <strong style="color:var(--danger-text);">Some rows had validation errors.</strong>
+                <p style="font-size:12.5px; color:var(--text-secondary); margin-top:2px;">
+                  Download the row-by-row error report to see missing customer names or invalid values.
+                </p>
+              </div>
+              <a href="#" id="download-error-btn" class="btn btn-danger btn-sm">
+                Download Error Report (.xlsx)
+              </a>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <a href="#" id="view-file-data-btn-2" class="btn btn-primary">Open & Edit This File's Data</a>
+            <a href="/month-files.html" class="btn btn-secondary">Browse All Files</a>
+            <a href="/customers.html" class="btn btn-secondary">All Customers (Combined)</a>
+            <button type="button" class="btn btn-secondary" onclick="resetImportWizard()">Import Another File</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="toast-container"></div>
+
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/toast.js"></script>
+<script src="/assets/js/sidebar.js"></script>
+<script src="/assets/js/imports.js"></script>
+</body>
+</html>

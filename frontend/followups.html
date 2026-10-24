@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Follow-up Reminders - Customer Follow-up CRM</title>
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <style>
+    .tab-nav {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 20px;
+    }
+    .tab-btn {
+      padding: 10px 18px;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tab-btn:hover {
+      color: var(--text-primary);
+    }
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-layout">
+  <div class="sidebar-backdrop"></div>
+
+  <!-- Sidebar -->
+  <aside class="app-sidebar">
+    <div class="sidebar-header">
+      <a href="/" class="brand-link">
+        <div class="brand-logo-icon">C</div>
+        <span>CRM Follow-up</span>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Core Modules</div>
+      <a href="/" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        <span>Dashboard</span>
+      </a>
+      <a href="/customers.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+        <span>All Customers</span>
+      </a>
+
+      <div class="nav-section-title">Follow-ups</div>
+      <a href="/followups.html?type=today" class="nav-item" id="nav-today">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span>Today's Follow-ups</span>
+        <span class="nav-badge warning" id="sidebar-badge-today" style="display:none;">0</span>
+      </a>
+      <a href="/followups.html?type=due_soon" class="nav-item" id="nav-due-soon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        <span>Due Soon (<span class="advance-days-lbl">5</span> Days)</span>
+        <span class="nav-badge info" id="sidebar-badge-due-soon" style="display:none; background:#0284c7; color:#fff;">0</span>
+      </a>
+      <a href="/followups.html?type=upcoming" class="nav-item" id="nav-upcoming">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line></svg>
+        <span>Upcoming Follow-ups</span>
+      </a>
+      <a href="/followups.html?type=overdue" class="nav-item" id="nav-overdue">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <span>Overdue Follow-ups</span>
+        <span class="nav-badge danger" id="sidebar-badge-overdue" style="display:none;">0</span>
+      </a>
+
+      <div class="nav-section-title">Excel Data</div>
+      <a href="/imports.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        <span>Excel Imports</span>
+      </a>
+      <a href="/month-files.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+        <span>Month-wise Files</span>
+      </a>
+      <a href="/call-history.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        <span>Call History</span>
+      </a>
+
+      <div class="nav-section-title">System</div>
+      <a href="/reports.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        <span>Reports</span>
+      </a>
+      <a href="/settings.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="admin-profile">
+        <div class="admin-avatar">A</div>
+        <div class="admin-info">
+          <div class="admin-name">Administrator</div>
+          <div class="admin-role">Admin Account</div>
+        </div>
+      </div>
+      <button class="logout-btn" title="Log Out">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="app-main">
+    <header class="app-topbar">
+      <div class="topbar-left">
+        <button class="mobile-toggle" aria-label="Toggle Navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <h1 class="page-title" id="page-title">Follow-up Reminders</h1>
+      </div>
+    </header>
+
+    <div class="page-content">
+      <!-- Tabs Navigation -->
+      <div class="tab-nav">
+        <button class="tab-btn active" data-type="today" onclick="switchFollowupTab('today')">
+          Today's Due
+        </button>
+        <button class="tab-btn" data-type="due_soon" onclick="switchFollowupTab('due_soon')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          Due Soon (<span class="advance-days-lbl">5</span> Days)
+        </button>
+        <button class="tab-btn" data-type="upcoming" onclick="switchFollowupTab('upcoming')">
+          Upcoming
+        </button>
+        <button class="tab-btn" data-type="overdue" onclick="switchFollowupTab('overdue')">
+          Overdue Calls
+        </button>
+        <button class="tab-btn" data-type="completed" onclick="switchFollowupTab('completed')">
+          Completed History
+        </button>
+      </div>
+
+      <!-- Follow-ups Data Table -->
+      <div class="table-responsive">
+        <table class="crm-table">
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Mobile</th>
+              <th>Company</th>
+              <th>City</th>
+              <th>Scheduled Time</th>
+              <th>Priority</th>
+              <th>Status</th>
+              <th>Notes</th>
+              <th style="text-align:right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="followups-tbody">
+            <tr><td colspan="9" style="text-align:center; padding:32px;">Loading tasks...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination-container">
+        <div class="pagination-info" id="followups-page-info">Showing 0 of 0</div>
+        <div class="pagination-controls">
+          <button id="btn-prev" class="btn btn-secondary btn-sm" disabled>&larr; Previous</button>
+          <span id="txt-page" style="font-size:13px; font-weight:600; padding:0 8px;">Page 1</span>
+          <button id="btn-next" class="btn btn-secondary btn-sm" disabled>Next &rarr;</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal: Log Call & Complete -->
+<div class="modal-backdrop" id="callModal">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3 class="modal-title">Log Call & Complete Reminder</h3>
+      <button class="modal-close" onclick="closeModal('callModal')">✕</button>
+    </div>
+    <form id="completeCallForm">
+      <input type="hidden" id="modal-followup-id">
+      <div class="modal-body">
+        <div style="font-weight:600; margin-bottom:12px;" id="modal-customer-name"></div>
+        <div class="form-group">
+          <label class="form-label">Call Outcome *</label>
+          <select id="modal-outcome" class="form-select" required>
+            <option value="Interested">Interested</option>
+            <option value="Call Back Required">Call Back Required</option>
+            <option value="Busy">Busy</option>
+            <option value="No Answer">No Answer</option>
+            <option value="Converted">Converted</option>
+            <option value="Not Interested">Not Interested</option>
+            <option value="Wrong Number">Wrong Number</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Call Summary / Notes</label>
+          <textarea id="modal-notes" class="form-textarea" rows="3" placeholder="Discussion notes..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Next Action</label>
+          <input type="text" id="modal-next-action" class="form-control" placeholder="e.g. Schedule product demo">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Schedule Another Follow-up (Optional)</label>
+          <input type="datetime-local" id="modal-next-sched" class="form-control">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('callModal')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save & Mark Done</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Reschedule -->
+<div class="modal-backdrop" id="rescheduleModal">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3 class="modal-title">Reschedule Task</h3>
+      <button class="modal-close" onclick="closeModal('rescheduleModal')">✕</button>
+    </div>
+    <form id="rescheduleForm">
+      <input type="hidden" id="resched-id">
+      <div class="modal-body">
+        <label class="form-label">Quick Presets</label>
+        <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="setReschedPreset(1)">Tomorrow</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="setReschedPreset(7)">+7 Days</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="setReschedPreset(15)">+15 Days</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="setReschedMonthPreset(1)">+1 Month</button>
+        </div>
+        <div class="form-group">
+          <label class="form-label">New Scheduled Time *</label>
+          <input type="datetime-local" id="resched-datetime" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Reason</label>
+          <input type="text" id="resched-reason" class="form-control" placeholder="e.g. Requested callback">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('rescheduleModal')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Update Schedule</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/toast.js"></script>
+<script src="/assets/js/sidebar.js"></script>
+<script src="/assets/js/followups.js"></script>
+</body>
+</html>

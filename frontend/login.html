@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - Customer Follow-up CRM</title>
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f1f5f9;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .login-container {
+      width: 100%;
+      max-width: 420px;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      padding: 36px 32px;
+    }
+    .login-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .login-logo {
+      width: 48px;
+      height: 48px;
+      background: var(--primary);
+      border-radius: var(--radius-lg);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .login-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .login-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .alert-error {
+      background-color: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      margin-bottom: 18px;
+      display: none;
+    }
+    .default-creds {
+      margin-top: 20px;
+      padding: 12px;
+      background-color: #f8fafc;
+      border-radius: var(--radius-md);
+      border: 1px dashed var(--border-color);
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <div class="login-header">
+      <div class="login-logo">CRM</div>
+      <h1 class="login-title">Customer Follow-up CRM</h1>
+      <p class="login-subtitle">Sign in to manage customers, imports, and calls</p>
+    </div>
+
+    <div id="login-error" class="alert-error"></div>
+
+    <form id="login-form">
+      <div class="form-group">
+        <label class="form-label" for="email">Admin Email</label>
+        <input type="email" id="email" class="form-control" required placeholder="admin@crm.local" autofocus autocomplete="username">
+      </div>
+
+      <div class="form-group">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <label class="form-label" for="password" style="margin:0;">Password</label>
+        </div>
+        <input type="password" id="password" class="form-control" required placeholder="••••••••" autocomplete="current-password">
+      </div>
+
+      <button type="submit" id="login-submit-btn" class="btn btn-primary" style="width: 100%; padding: 11px; margin-top: 8px;">
+        Sign In
+      </button>
+    </form>
+
+    <div class="default-creds">
+      <strong>Default Admin Credentials:</strong><br>
+      Email: <code>admin@crm.local</code><br>
+      Password: <code>Admin@12345</code>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/toast.js"></script>
+  <script>
+    // Load dynamic firm branding
+    (async () => {
+      try {
+        const apiBase = window.API_BASE || (window.location.pathname.startsWith('/excel-crm') ? '/excel-crm' : '');
+        const res = await fetch(`${apiBase}/api/settings/public`);
+        const firm = await res.json();
+        if (firm && firm.firm_name) {
+          document.querySelector(".login-title").textContent = firm.firm_name;
+          document.title = `Admin Login - ${firm.firm_name}`;
+          if (firm.firm_tagline) {
+            document.querySelector(".login-subtitle").textContent = firm.firm_tagline;
+          }
+          if (firm.theme_color) {
+            document.documentElement.style.setProperty('--primary', firm.theme_color);
+            document.documentElement.style.setProperty('--primary-hover', firm.theme_color);
+          }
+          const logoEl = document.querySelector(".login-logo");
+          if (firm.firm_logo) {
+            logoEl.innerHTML = `<img src="${firm.firm_logo}" alt="${firm.firm_name}" style="width:100%; height:100%; object-fit:contain; border-radius:10px;">`;
+            logoEl.style.background = "transparent";
+          } else {
+            logoEl.textContent = firm.firm_name[0].toUpperCase();
+          }
+        }
+      } catch (e) {}
+    })();
+
+    // Redirect if already authenticated
+    (async () => {
+      try {
+        const user = await window.api.get("/api/auth/me");
+        if (user && user.id) {
+          window.location.href = "/";
+        }
+      } catch (e) {
+        // Not logged in, stay on login page
+      }
+    })();
+
+    const loginForm = document.getElementById("login-form");
+    const errorEl = document.getElementById("login-error");
+    const submitBtn = document.getElementById("login-submit-btn");
+
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorEl.style.display = "none";
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Signing In...";
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      try {
+        const res = await window.api.post("/api/auth/login", { email, password });
+        window.api.setToken(res.access_token);
+        showToast("Login successful! Redirecting...", "success");
+
+        const params = new URLSearchParams(window.location.search);
+        let redirectUrl = params.get("redirect") || "/";
+        const apiBase = window.API_BASE || (window.location.pathname.startsWith('/excel-crm') ? '/excel-crm' : '');
+        if (redirectUrl === "/" && apiBase) {
+          redirectUrl = `${apiBase}/`;
+        }
+        setTimeout(() => {
+          window.location.href = redirectUrl;
+        }, 500);
+      } catch (err) {
+        errorEl.textContent = err.message || "Invalid email or password.";
+        errorEl.style.display = "block";
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Sign In";
+      }
+    });
+  </script>
+</body>
+</html>

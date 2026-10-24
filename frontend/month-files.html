@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Month-wise Files - Customer Follow-up CRM</title>
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+</head>
+<body>
+
+<div class="app-layout">
+  <div class="sidebar-backdrop"></div>
+
+  <!-- Sidebar -->
+  <aside class="app-sidebar">
+    <div class="sidebar-header">
+      <a href="/" class="brand-link">
+        <div class="brand-logo-icon">C</div>
+        <span>CRM Follow-up</span>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Core Modules</div>
+      <a href="/" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        <span>Dashboard</span>
+      </a>
+      <a href="/customers.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+        <span>All Customers</span>
+      </a>
+
+      <div class="nav-section-title">Follow-ups</div>
+      <a href="/followups.html?type=today" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span>Today's Follow-ups</span>
+        <span class="nav-badge warning" id="sidebar-badge-today" style="display:none;">0</span>
+      </a>
+      <a href="/followups.html?type=due_soon" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        <span>Due Soon (<span class="advance-days-lbl">5</span> Days)</span>
+        <span class="nav-badge info" id="sidebar-badge-due-soon" style="display:none; background:#0284c7; color:#fff;">0</span>
+      </a>
+      <a href="/followups.html?type=upcoming" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line></svg>
+        <span>Upcoming Follow-ups</span>
+      </a>
+      <a href="/followups.html?type=overdue" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <span>Overdue Follow-ups</span>
+        <span class="nav-badge danger" id="sidebar-badge-overdue" style="display:none;">0</span>
+      </a>
+
+      <div class="nav-section-title">Excel Data</div>
+      <a href="/imports.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        <span>Excel Imports</span>
+      </a>
+      <a href="/month-files.html" class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+        <span>Month-wise Files</span>
+      </a>
+      <a href="/call-history.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        <span>Call History</span>
+      </a>
+
+      <div class="nav-section-title">System</div>
+      <a href="/reports.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        <span>Reports</span>
+      </a>
+      <a href="/settings.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="admin-profile">
+        <div class="admin-avatar">A</div>
+        <div class="admin-info">
+          <div class="admin-name">Administrator</div>
+          <div class="admin-role">Admin Account</div>
+        </div>
+      </div>
+      <button class="logout-btn" title="Log Out">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="app-main">
+    <header class="app-topbar">
+      <div class="topbar-left">
+        <button class="mobile-toggle" aria-label="Toggle Navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <h1 class="page-title">Month-wise Excel Files Explorer</h1>
+      </div>
+      <div class="topbar-right">
+        <a href="/imports.html" class="btn btn-primary btn-sm">Import New File</a>
+      </div>
+    </header>
+
+    <div class="page-content">
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <div class="filter-controls">
+          <label class="form-label" style="margin:0;">Year:</label>
+          <select id="filter-year" class="form-select" style="width:110px;">
+            <option value="">All Years</option>
+            <option value="2026" selected>2026</option>
+            <option value="2025">2025</option>
+          </select>
+
+          <label class="form-label" style="margin:0;">Month:</label>
+          <select id="filter-month" class="form-select" style="width:130px;">
+            <option value="">All Months</option>
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
+
+          <button id="apply-filter" class="btn btn-secondary btn-sm">Filter</button>
+        </div>
+      </div>
+
+      <!-- Files Table -->
+      <div class="table-responsive">
+        <table class="crm-table">
+          <thead>
+            <tr>
+              <th>Filename</th>
+              <th>Upload Date</th>
+              <th>Month / Year</th>
+              <th>Sheet</th>
+              <th>Total Rows</th>
+              <th>Imported</th>
+              <th>Updated</th>
+              <th>Duplicates</th>
+              <th>Status</th>
+              <th style="text-align:right; min-width:215px; width:220px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="files-table-body">
+            <tr><td colspan="10" style="text-align:center; padding:32px;">Loading files...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- File Records Drilldown Section -->
+      <div class="card" id="drilldown-card" style="display:none; margin-top:28px;">
+        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <h2 class="card-title" id="drilldown-title">File Records Preview</h2>
+            <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Tracked rows from this imported workbook</div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <a id="drilldown-full-editor-btn" href="#" class="btn btn-primary btn-sm">
+              📂 Open Full File Editor &rarr;
+            </a>
+            <button class="btn btn-secondary btn-sm" onclick="closeDrilldown()">Close</button>
+          </div>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <div class="table-responsive" style="border:none; border-radius:0;">
+            <table class="crm-table">
+              <thead>
+                <tr>
+                  <th>Row #</th>
+                  <th>Customer Name</th>
+                  <th>Mobile</th>
+                  <th>Row Status</th>
+                  <th>Error / Notes</th>
+                  <th style="text-align:right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="drilldown-tbody">
+                <tr><td colspan="6" style="text-align:center; padding:20px;">Loading rows...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal: Edit Customer -->
+<div class="modal-backdrop" id="editCustomerModal">
+  <div class="modal-container" style="max-width: 620px;">
+    <div class="modal-header">
+      <div>
+        <h3 class="modal-title">Edit Customer Record</h3>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Update details directly</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('editCustomerModal')">✕</button>
+    </div>
+    <form id="editCustomerForm">
+      <input type="hidden" id="edit-cust-id">
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="edit-name">Customer Name *</label>
+            <input type="text" id="edit-name" class="form-control" required placeholder="Full Name">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-code">Customer Code</label>
+            <input type="text" id="edit-code" class="form-control" placeholder="Code">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="edit-mobile">Mobile Number *</label>
+            <input type="tel" id="edit-mobile" class="form-control" required placeholder="Mobile">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-email">Email</label>
+            <input type="email" id="edit-email" class="form-control" placeholder="Email">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="edit-company">Company</label>
+            <input type="text" id="edit-company" class="form-control" placeholder="Company">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-city">City</label>
+            <input type="text" id="edit-city" class="form-control" placeholder="City">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="edit-status">Status</label>
+            <select id="edit-status" class="form-select">
+              <option value="New">New</option>
+              <option value="Follow-up Scheduled">Follow-up Scheduled</option>
+              <option value="Interested">Interested</option>
+              <option value="Converted">Converted</option>
+              <option value="Not Interested">Not Interested</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-category">Category</label>
+            <input type="text" id="edit-category" class="form-control" placeholder="Category">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="edit-address">Address</label>
+          <textarea id="edit-address" class="form-textarea" rows="2" placeholder="Full address"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('editCustomerModal')">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="save-edit-btn">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/toast.js"></script>
+<script src="/assets/js/sidebar.js"></script>
+<script src="/assets/js/month-files.js"></script>
+</body>
+</html>

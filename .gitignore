@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+*.env
+!.env.example
+
+# Storage
+storage/uploads/*
+!storage/uploads/.gitkeep
+storage/import-errors/*
+!storage/import-errors/.gitkeep
+storage/exports/*
+!storage/exports/.gitkeep
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+scratch/

@@ -1,0 +1,10 @@
+RewriteEngine On
+RewriteBase /excel-crm/
+
+# 1. Direct Static Files & Uploads handling for maximum speed
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# 2. Route all other requests to index.php proxy
+RewriteRule ^ index.php [QSA,L]

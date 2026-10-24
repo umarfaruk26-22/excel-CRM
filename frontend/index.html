@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Customer Follow-up CRM</title>
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="app-layout">
+  <!-- Sidebar Backdrop for Mobile -->
+  <div class="sidebar-backdrop"></div>
+
+  <!-- Sidebar -->
+  <aside class="app-sidebar">
+    <div class="sidebar-header">
+      <a href="/" class="brand-link">
+        <div class="brand-logo-icon">C</div>
+        <span>CRM Follow-up</span>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Core Modules</div>
+      <a href="/" class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        <span>Dashboard</span>
+      </a>
+      <a href="/customers.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        <span>All Customers</span>
+      </a>
+
+      <div class="nav-section-title">Follow-ups</div>
+      <a href="/followups.html?type=today" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span>Today's Follow-ups</span>
+        <span class="nav-badge warning" id="sidebar-badge-today" style="display:none;">0</span>
+      </a>
+      <a href="/followups.html?type=due_soon" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 10"></polyline></svg>
+        <span>Due Soon (<span class="advance-days-lbl">5</span> Days)</span>
+        <span class="nav-badge info" id="sidebar-badge-due-soon" style="display:none; background:#0284c7; color:#fff;">0</span>
+      </a>
+      <a href="/followups.html?type=upcoming" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        <span>Upcoming Follow-ups</span>
+      </a>
+      <a href="/followups.html?type=overdue" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <span>Overdue Follow-ups</span>
+        <span class="nav-badge danger" id="sidebar-badge-overdue" style="display:none;">0</span>
+      </a>
+
+      <div class="nav-section-title">Excel Data</div>
+      <a href="/imports.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        <span>Excel Imports</span>
+      </a>
+      <a href="/month-files.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        <span>Month-wise Files</span>
+      </a>
+      <a href="/call-history.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        <span>Call History</span>
+      </a>
+
+      <div class="nav-section-title">System</div>
+      <a href="/reports.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        <span>Reports</span>
+      </a>
+      <a href="/settings.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="admin-profile">
+        <div class="admin-avatar">A</div>
+        <div class="admin-info">
+          <div class="admin-name">Administrator</div>
+          <div class="admin-role">Admin Account</div>
+        </div>
+      </div>
+      <button class="logout-btn" title="Log Out">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="app-main">
+    <header class="app-topbar">
+      <div class="topbar-left">
+        <button class="mobile-toggle" aria-label="Toggle Navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <h1 class="page-title">Dashboard</h1>
+      </div>
+
+      <div class="topbar-right">
+        <div class="topbar-actions">
+          <a href="/imports.html" class="btn btn-secondary btn-sm">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            Import Excel
+          </a>
+          <button onclick="openModal('addCustomerModal')" class="btn btn-primary btn-sm">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add Customer
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-content">
+      <!-- Real-time Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-title">Total Customers</span>
+            <div class="stat-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+            </div>
+          </div>
+          <div class="stat-value" id="stat-total-customers">-</div>
+          <div class="stat-footer">Permanent in MySQL</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-title">Today's Follow-ups</span>
+            <div class="stat-icon warning">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+          </div>
+          <div class="stat-value" id="stat-today-followups">-</div>
+          <div class="stat-footer"><a href="/followups.html?type=today">View tasks &rarr;</a></div>
+        </div>
+
+        <div class="stat-card" style="border-left: 3px solid #0284c7;">
+          <div class="stat-header">
+            <span class="stat-title">Due in <span class="advance-days-lbl">5</span> Days</span>
+            <div class="stat-icon" style="background:#e0f2fe; color:#0284c7;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            </div>
+          </div>
+          <div class="stat-value" id="stat-due-soon-followups" style="color:#0369a1;">-</div>
+          <div class="stat-footer"><a href="/followups.html?type=due_soon">Advance alert window &rarr;</a></div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-title">Overdue Calls</span>
+            <div class="stat-icon danger">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            </div>
+          </div>
+          <div class="stat-value" id="stat-overdue-followups" style="color:var(--danger-text);">-</div>
+          <div class="stat-footer"><a href="/followups.html?type=overdue">Needs immediate action &rarr;</a></div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-title">Upcoming Tasks</span>
+            <div class="stat-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line></svg>
+            </div>
+          </div>
+          <div class="stat-value" id="stat-upcoming-followups">-</div>
+          <div class="stat-footer">Scheduled future dates</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-title">Completed Calls</span>
+            <div class="stat-icon success">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+          </div>
+          <div class="stat-value" id="stat-completed-calls">-</div>
+          <div class="stat-footer">Logged interactions</div>
+        </div>
+      </div>
+
+      <!-- Advance Reminder Alert Banner / Table: Approaching in next 5 days -->
+      <div class="card" id="due-soon-card" style="margin-bottom: 24px;">
+        <div class="card-header" style="background: linear-gradient(135deg, rgba(2, 132, 199, 0.05), rgba(14, 165, 233, 0.02)); border-bottom: 1px solid rgba(2, 132, 199, 0.15);">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div style="width:32px; height:32px; border-radius:8px; background:#e0f2fe; display:flex; align-items:center; justify-content:center; color:#0284c7;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            </div>
+            <div>
+              <h2 class="card-title" style="margin:0; font-size:15px; color:#0f172a;">
+                Approaching Follow-ups (Next <span class="advance-days-lbl">5</span> Days Reminders)
+              </h2>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">
+                Surfacing early based on the <span class="advance-days-lbl">5</span>-day advance notice rule configured in <a href="/settings.html" style="color:var(--primary); font-weight:500;">Settings</a>.
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span class="badge badge-info" id="due-soon-count-badge">0 Approaching</span>
+            <a href="/followups.html?type=due_soon" class="btn btn-secondary btn-sm">Open in Tracker &rarr;</a>
+          </div>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <div class="table-responsive" style="border:none; border-radius:0;">
+            <table class="crm-table">
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Mobile</th>
+                  <th>Scheduled Date & Time</th>
+                  <th>Advance Notice</th>
+                  <th>Priority</th>
+                  <th>Notes</th>
+                  <th style="text-align:right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="due-soon-followups-tbody">
+                <tr><td colspan="7" style="text-align:center; padding:24px;">Loading approaching tasks...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Action Tables Grid -->
+      <div style="display:grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 24px;">
+        <!-- Today's Follow-up Tasks -->
+        <div class="card" style="margin-bottom:0;">
+          <div class="card-header">
+            <h2 class="card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              Today's Scheduled Follow-ups
+            </h2>
+            <a href="/followups.html?type=today" class="btn btn-secondary btn-sm">View All</a>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-responsive" style="border:none; border-radius:0;">
+              <table class="crm-table">
+                <thead>
+                  <tr>
+                    <th>Customer</th>
+                    <th>Mobile</th>
+                    <th>Time</th>
+                    <th>Priority</th>
+                    <th>Notes</th>
+                    <th style="text-align:right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="today-followups-tbody">
+                  <tr><td colspan="6" style="text-align:center; padding:24px;">Loading tasks...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overdue Follow-ups Alert Box -->
+        <div class="card" style="margin-bottom:0;">
+          <div class="card-header">
+            <h2 class="card-title" style="color:var(--danger-text);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              Overdue Calls
+            </h2>
+            <a href="/followups.html?type=overdue" class="btn btn-secondary btn-sm">All Overdue</a>
+          </div>
+          <div class="card-body" id="overdue-list-container" style="padding: 12px 16px;">
+            <div style="text-align:center; padding: 20px; color:var(--text-muted);">Loading overdue items...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Second Row: Recent Imports & Recent Calls -->
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <!-- Recent Excel Imports -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              Recent Excel Imports
+            </h2>
+            <a href="/month-files.html" class="btn btn-secondary btn-sm">All Files</a>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-responsive" style="border:none; border-radius:0;">
+              <table class="crm-table">
+                <thead>
+                  <tr>
+                    <th>Filename</th>
+                    <th>Month/Year</th>
+                    <th>Rows</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-imports-tbody">
+                  <tr><td colspan="4" style="text-align:center; padding:20px;">Loading imports...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Call Activities -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+              Recent Call Activities
+            </h2>
+            <a href="/call-history.html" class="btn btn-secondary btn-sm">All Calls</a>
+          </div>
+          <div class="card-body" id="recent-calls-container" style="padding: 12px 16px;">
+            <div style="text-align:center; padding: 20px; color:var(--text-muted);">Loading recent calls...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal: Log Call -->
+<div class="modal-backdrop" id="logCallModal">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3 class="modal-title">Log Customer Call</h3>
+      <button class="modal-close" onclick="closeModal('logCallModal')">✕</button>
+    </div>
+    <form id="logCallForm">
+      <input type="hidden" id="call-customer-id">
+      <input type="hidden" id="call-followup-id">
+      <div class="modal-body">
+        <div style="margin-bottom:14px; font-weight:600; color:var(--text-primary);" id="call-customer-name-display"></div>
+        <div class="form-group">
+          <label class="form-label" for="call-outcome">Call Outcome *</label>
+          <select id="call-outcome" class="form-select" required>
+            <option value="Interested">Interested</option>
+            <option value="Call Back Required">Call Back Required</option>
+            <option value="Busy">Busy</option>
+            <option value="No Answer">No Answer</option>
+            <option value="Converted">Converted</option>
+            <option value="Not Interested">Not Interested</option>
+            <option value="Wrong Number">Wrong Number</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="call-notes">Call Notes</label>
+          <textarea id="call-notes" class="form-textarea" rows="3" placeholder="Summary of discussion with client..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="call-next-action">Next Action</label>
+          <input type="text" id="call-next-action" class="form-control" placeholder="e.g. Send quotation on WhatsApp, Call next Monday">
+        </div>
+
+        <div style="border-top:1px dashed var(--border-color); padding-top:14px; margin-top:14px;">
+          <label class="form-label">Schedule Next Follow-up?</label>
+          <div style="display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="setCallNextDatePreset(1)">Tomorrow</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="setCallNextDatePreset(7)">+7 Days</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="setCallNextDatePreset(15)">+15 Days</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="setCallNextMonthPreset(1)">+1 Month</button>
+          </div>
+          <input type="datetime-local" id="call-next-date" class="form-control">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('logCallModal')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Call Log</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Reschedule Follow-up -->
+<div class="modal-backdrop" id="rescheduleModal">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3 class="modal-title">Reschedule Follow-up</h3>
+      <button class="modal-close" onclick="closeModal('rescheduleModal')">✕</button>
+    </div>
+    <form id="rescheduleForm">
+      <input type="hidden" id="reschedule-followup-id">
+      <div class="modal-body">
+        <p style="margin-bottom:14px; color:var(--text-secondary); font-size:13.5px;" id="reschedule-customer-display"></p>
+        
+        <label class="form-label">Quick Presets</label>
+        <div style="display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="setReschedulePreset(1)">Tomorrow</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="setReschedulePreset(7)">+7 Days</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="setReschedulePreset(15)">+15 Days</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="setRescheduleMonthPreset(1)">+1 Month</button>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reschedule-date">New Scheduled Date & Time *</label>
+          <input type="datetime-local" id="reschedule-date" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reschedule-reason">Reason for Rescheduling</label>
+          <input type="text" id="reschedule-reason" class="form-control" placeholder="e.g. Client requested callback next week">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('rescheduleModal')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Update Schedule</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Add Customer Manually -->
+<div class="modal-backdrop" id="addCustomerModal">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3 class="modal-title">Add New Customer</h3>
+      <button class="modal-close" onclick="closeModal('addCustomerModal')">✕</button>
+    </div>
+    <form id="addCustomerForm">
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="new-cust-name">Customer Name *</label>
+            <input type="text" id="new-cust-name" class="form-control" required placeholder="Full Name">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="new-cust-code">Customer Code / ID</label>
+            <input type="text" id="new-cust-code" class="form-control" placeholder="e.g. CUST-001">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="new-cust-mobile">Mobile Number *</label>
+            <input type="tel" id="new-cust-mobile" class="form-control" required placeholder="10-digit mobile number">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="new-cust-altphone">Alternate Phone</label>
+            <input type="tel" id="new-cust-altphone" class="form-control" placeholder="Secondary contact">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="new-cust-email">Email Address</label>
+            <input type="email" id="new-cust-email" class="form-control" placeholder="client@example.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="new-cust-company">Company / Firm</label>
+            <input type="text" id="new-cust-company" class="form-control" placeholder="Business name">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="new-cust-city">City</label>
+            <input type="text" id="new-cust-city" class="form-control" placeholder="City">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="new-cust-state">State</label>
+            <input type="text" id="new-cust-state" class="form-control" placeholder="State">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="new-cust-address">Address</label>
+          <textarea id="new-cust-address" class="form-textarea" rows="2" placeholder="Full address"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('addCustomerModal')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Customer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/toast.js"></script>
+<script src="/assets/js/sidebar.js"></script>
+<script src="/assets/js/dashboard.js"></script>
+</body>
+</html>
