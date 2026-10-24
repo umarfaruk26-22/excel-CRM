@@ -23,3 +23,11 @@ storage/exports/*
 Thumbs.db
 *.log
 scratch/
+
+# Database & Runtime
+database/*.db
+database/*.sqlite
+database/*.sqlite3
+.gunicorn_boot.lock
+gunicorn.sock
+uploads/

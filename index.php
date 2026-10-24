@@ -49,6 +49,22 @@ if ($action) {
                 break;
             }
         }
+    } elseif ($action === 'pull') {
+        @exec("cd {$app_dir} && git fetch origin main 2>&1 && git reset --hard origin/main 2>&1", $git_out, $git_code);
+        echo "<h3>Git Pull from origin/main Result:</h3><pre>" . htmlspecialchars(implode("\n", (array)$git_out)) . "</pre>";
+        @exec("pkill -9 -f 'backend.app.main:app' 2>&1");
+        @exec("pkill -9 -f '{$backend_port}' 2>&1");
+        if (file_exists($socket_path)) @unlink($socket_path);
+        if (file_exists($lock_file)) @unlink($lock_file);
+        echo "<pre>Restarting backend with latest git code...</pre>";
+        start_backend($app_dir, $socket_path, $backend_host, $backend_port, $boot_log, $error_log, $access_log, $lock_file, $venv_python);
+        for ($i = 0; $i < 15; $i++) {
+            usleep(300000);
+            if (is_backend_alive($socket_path, $backend_host, $backend_port)) {
+                echo "<p style='color:#10b981;'><strong>✅ CRM Backend is now ALIVE and running the latest Git repository commit!</strong></p>";
+                break;
+            }
+        }
     } elseif ($action === 'seed') {
         if ($venv_python) {
             @exec("cd {$app_dir} && {$venv_python} database/seed_admin.py 2>&1", $out, $ret);
@@ -68,7 +84,9 @@ if ($action) {
     }
 
     echo "<br><a class='btn' href='{$sub_path}/'>⬅️ Return to CRM Dashboard</a>";
+    echo "<a class='btn' href='{$sub_path}/?action=pull'>🚀 Git Pull & Deploy</a>";
     echo "<a class='btn' href='{$sub_path}/?action=restart'>🔄 Restart Backend</a>";
+    echo "<a class='btn' href='{$sub_path}/?action=status'>📊 Check Status</a>";
     echo "</body></html>";
     exit;
 }
